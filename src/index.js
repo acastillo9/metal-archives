@@ -5,7 +5,7 @@ const app = express();
 const port = process.env.PORT || 3000;
 const { JSDOM } = jsdom;
 
-app.get("/band/:bandName", async (req, res) => {
+app.get("/bands/:bandName", async (req, res) => {
   const { bandName } = req.params;
   const {
     window: { document },
