@@ -14,16 +14,10 @@ app.get("/bands/:bandName", async (req, res) => {
   } = await JSDOM.fromURL(`${BASE_URL}/bands/${bandName}`);
 
   // Comment
-  const commentScript = document
-    .querySelector("#band_info > div.band_comment.clear > div > a")
-    .getAttribute("onclick");
-  const comment = await getComment(extractCommentURL(commentScript));
+  const comment = await getComment(document);
 
   // Discography
-  const discographyURL = document
-    .querySelector("#band_disco > ul > li:nth-child(1) > a")
-    .getAttribute("href");
-  const discography = await getDiscography(discographyURL);
+  const discography = await getDiscography(document);
 
   const band = {
     bandName: document.querySelector("#band_info > h1 > a").textContent,
@@ -63,6 +57,23 @@ app.listen(port, () => {
   console.log(`Metal Archives App listening on port ${port}`);
 });
 
+async function getComment(document) {
+  let comment;
+  const commentSeeMore = document.querySelector(
+    "#band_info > div.band_comment.clear > div > a",
+  );
+  if (commentSeeMore) {
+    const path = extractCommentURL(commentSeeMore.getAttribute("onclick"));
+    const response = await fetch(`${BASE_URL}/${path}`);
+    comment = await response.text();
+  } else {
+    comment = document.querySelector(
+      "#band_info > div.band_comment.clear",
+    ).innerHTML;
+  }
+  return comment;
+}
+
 function extractCommentURL(text) {
   const regex = /readMore\(['"]([^'"]+)['"]\)/;
   const match = text.match(regex);
@@ -74,13 +85,10 @@ function extractCommentURL(text) {
   return "";
 }
 
-async function getComment(path) {
-  const response = await fetch(`${BASE_URL}/${path}`);
-  const html = await response.text();
-  return html;
-}
-
-async function getDiscography(url) {
+async function getDiscography(document) {
+  const url = document
+    .querySelector("#band_disco > ul > li:nth-child(1) > a")
+    .getAttribute("href");
   const response = await fetch(url);
   const html = await response.text();
   const {
