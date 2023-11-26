@@ -2,7 +2,7 @@ const express = require("express");
 const jsdom = require("jsdom");
 
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
 const { JSDOM } = jsdom;
 
 app.get("/band/:bandName", async (req, res) => {
