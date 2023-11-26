@@ -15,7 +15,7 @@ app.get("/bands/:bandName", async (req, res) => {
 
   const bands = [];
   const bandList = document.querySelectorAll("#content_wrapper > ul > li > a");
-  if (bandList) {
+  if (bandList.length) {
     for (const bandItem of bandList) {
       const url = bandItem.getAttribute("href");
       const band = await getBandFromURL(url);
