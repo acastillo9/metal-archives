@@ -92,10 +92,10 @@ async function getDiscography(document) {
   const response = await fetch(url);
   const html = await response.text();
   const {
-    window: { document },
+    window: { document: tableDocument },
   } = new JSDOM(html);
 
-  const tableRows = document.querySelectorAll("table tbody tr");
+  const tableRows = tableDocument.querySelectorAll("table tbody tr");
   const discography = [];
   tableRows.forEach((row) => {
     let cells = row.querySelectorAll("td");
